@@ -9,6 +9,9 @@ import { Component } from '@angular/core';
   styleUrl: './home.component.css',
 })
 export class HomeComponent {
+  logout() {
+    throw new Error('Method not implemented.');
+  }
   users = Users;
   chats = Chats;
   selectedUserId: string = '1';
@@ -87,4 +90,3 @@ export const Chats: ChatModel[] = [
       'Project has been already finished and I have results to show you.',
   },
 ];
-
