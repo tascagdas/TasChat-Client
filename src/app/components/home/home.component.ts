@@ -1,5 +1,8 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { UserModel } from '../../Models/user.model';
+import { ChatModel } from '../../Models/chat.model';
 
 @Component({
   selector: 'app-home',
@@ -9,84 +12,41 @@ import { Component } from '@angular/core';
   styleUrl: './home.component.css',
 })
 export class HomeComponent {
-  logout() {
-    throw new Error('Method not implemented.');
-  }
-  users = Users;
-  chats = Chats;
+
+  users :UserModel[] = [];
+  chats :ChatModel[] = [];
   selectedUserId: string = '1';
-  selectedUser: UserModel = {
-    id: '1',
-    name: 'Vincent Porter',
-    status: 'left 7 min ago',
-    avatar: 'avatar1.png',
-  };
+  selectedUser: UserModel = new UserModel();
+  user = new UserModel();
+
+  constructor(
+    private http: HttpClient
+  ) {
+    this.user = JSON.parse(localStorage.getItem('accessToken') ?? "")
+    this.getUsers();
+  }
+  logout() {
+
+    localStorage.clear();
+    document.location.reload();
+  }
+
+  getUsers() {
+    this.http.get<UserModel[]>('http://localhost:5086/api/Chats/GetUsers').subscribe(r =>
+      this.users = r.filter(u=> u.id != this.user.id)
+    );
+  }
+
+
 
   changeUser(user: UserModel) {
     this.selectedUserId = user.id;
     this.selectedUser = user;
 
-    this.chats = Chats.filter(
-      (p) =>
-        (p.toUserId == user.id && p.userId == '0') ||
-        (p.userId == user.id && p.toUserId == '0')
-    );
+    // this.chats = Chats.filter(
+    //   (p) =>
+    //     (p.toUserId == user.id && p.userId == '0') ||
+    //     (p.userId == user.id && p.toUserId == '0')
+    // );
   }
 }
-
-export class UserModel {
-  id: string = '';
-  name: string = '';
-  status: string = '';
-  avatar: string = '';
-}
-
-export const Users: UserModel[] = [
-  {
-    id: '1',
-    name: 'Vincent Porter',
-    status: 'left 7 min ago',
-    avatar: 'avatar1.png',
-  },
-  {
-    id: '2',
-    name: 'Aiden Chavez',
-    status: 'online',
-    avatar: 'avatar3.png',
-  },
-  {
-    id: '3',
-    name: 'Christian Kelly',
-    status: 'offline since oct 28',
-    avatar: 'avatar3.png',
-  },
-];
-
-export class ChatModel {
-  userId: string = '';
-  toUserId: string = '';
-  date: string = '';
-  message: string = '';
-}
-
-export const Chats: ChatModel[] = [
-  {
-    userId: '0',
-    toUserId: '1',
-    date: new Date().toString(),
-    message: 'Hi Aiden, how are you? How is the project coming along?',
-  },
-  {
-    userId: '1',
-    toUserId: '0',
-    date: new Date().toString(),
-    message: 'Are we meeting today?',
-  },
-  {
-    userId: '1',
-    toUserId: '0',
-    date: new Date().toString(),
-    message:
-      'Project has been already finished and I have results to show you.',
-  },
-];

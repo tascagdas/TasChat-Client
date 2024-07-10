@@ -28,11 +28,11 @@
                 (click)="changeUser(user)"
               >
                 <img
-                  src="https://bootdey.com/img/Content/avatar/{{ user.avatar }}"
+                  src="http://localhost:5086/{{ user.avatar }}"
                   alt="avatar"
                 />
                 <div class="about">
-                  <div class="name">{{ user.name }}</div>
+                  <div class="name">{{ user.userName }}</div>
                   <div class="status">
                     <i
                       class="fa fa-circle"
@@ -58,14 +58,12 @@
                     data-target="#view_info"
                   >
                     <img
-                      src="https://bootdey.com/img/Content/avatar/{{
-                        selectedUser.avatar
-                      }}"
+                      src="http://localhost:5086/{{selectedUser.avatar}}"
                       alt="avatar"
                     />
                   </a>
                   <div class="chat-about">
-                    <h6 class="m-b-0">{{ selectedUser.name }}</h6>
+                    <h6 class="m-b-0">{{ selectedUser.userName }}</h6>
                     <small>{{ selectedUser.status }}</small>
                   </div>
                 </div>
@@ -74,7 +72,7 @@
             <div class="chat-history" style="height: 600px">
               <ul class="m-b-0">
                 @for(chat of chats; track chat){ @if(selectedUserId !=
-                chat.userId){
+                chat.fromUserId){
                 <li
                   class="clearfix d-flex"
                   style="
