@@ -27,7 +27,7 @@ setImage(event : any) {
     formData.append('userName', this.registerModel.userName);
     formData.append('file',this.registerModel.file,this.registerModel.file.name)
     this.http
-      .post('http://localhost:5086/api/Auth/Register',formData)
+      .post('https  ://localhost:7116/api/Auth/Register', formData)
       .subscribe((response) => {
         localStorage.setItem('accessToken', JSON.stringify(response));
         this.router.navigateByUrl('/login');

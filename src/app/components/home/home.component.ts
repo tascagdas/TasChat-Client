@@ -32,9 +32,9 @@ export class HomeComponent {
   }
 
   getUsers() {
-    this.http.get<UserModel[]>('http://localhost:5086/api/Chats/GetUsers').subscribe(r =>
-      this.users = r.filter(u=> u.id != this.user.id)
-    );
+    this.http
+      .get<UserModel[]>('https://localhost:7116/api/Chats/GetUsers')
+      .subscribe((r) => (this.users = r.filter((u) => u.id != this.user.id)));
   }
 
 

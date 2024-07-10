@@ -21,9 +21,11 @@ export class LoginComponent {
 
 
   login() {
-    this.http.get('http://localhost:5086/api/Auth/Login?userName=' + this.userName).subscribe(response => {
-      localStorage.setItem("accessToken", JSON.stringify(response));
-      this.router.navigateByUrl('/');
-    });
+    this.http
+      .get('https://localhost:7116/api/Auth/Login?userName=' + this.userName)
+      .subscribe((response) => {
+        localStorage.setItem('accessToken', JSON.stringify(response));
+        this.router.navigateByUrl('/');
+      });
   }
 }
