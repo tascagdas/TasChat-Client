@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { UserModel } from '../../Models/user.model';
 import { ChatModel } from '../../Models/chat.model';
+import * as signalR from '@microsoft/signalr';
 
 @Component({
   selector: 'app-home',
@@ -15,15 +16,33 @@ export class HomeComponent {
 
   users :UserModel[] = [];
   chats :ChatModel[] = [];
-  selectedUserId: string = '1';
+  selectedUserId: string = '';
   selectedUser: UserModel = new UserModel();
   user = new UserModel();
+  hub: signalR.HubConnection | undefined;
 
   constructor(
     private http: HttpClient
   ) {
     this.user = JSON.parse(localStorage.getItem('accessToken') ?? "")
     this.getUsers();
+
+
+
+    this.hub = new signalR.HubConnectionBuilder().withUrl('https://localhost:7116/chat-hub').build();
+
+    this.hub.start().then(() => {
+      console.log("hub bağlantısı sağlandı.")
+
+
+      this.hub?.invoke("Connect", this.user.id)
+      
+      this.hub?.on("Users", (resp:UserModel) => {
+        console.log(resp)
+        this.users.find(u => u.id == resp.id)!.status=resp.status
+      })
+    });
+    console.log(this.users)
   }
   logout() {
 
