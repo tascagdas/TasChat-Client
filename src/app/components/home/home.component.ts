@@ -21,9 +21,10 @@ export class HomeComponent {
       "toUserId": this.selectedUserId,
       "message" : this.message
     }
-    this.http.post('https://localhost:7116/api/Chats/SendMessage', data)
-      .subscribe(resp => {
-      
+    this.http.post<ChatModel>('https://localhost:7116/api/Chats/SendMessage', data)
+      .subscribe((resp) => {
+        this.chats.push(resp);
+        this.message = "";
       });
   }
 
@@ -57,6 +58,13 @@ export class HomeComponent {
       })
     });
     console.log(this.users)
+
+    this.hub?.on("Messages", (resp: ChatModel) => {
+      console.log(resp)
+      if (this.selectedUserId == resp.fromUserId) {
+        this.chats.push(resp)
+      }
+    })
   }
   logout() {
 
@@ -75,11 +83,10 @@ export class HomeComponent {
   changeUser(user: UserModel) {
     this.selectedUserId = user.id;
     this.selectedUser = user;
-
-    // this.chats = Chats.filter(
-    //   (p) =>
-    //     (p.toUserId == user.id && p.userId == '0') ||
-    //     (p.userId == user.id && p.toUserId == '0')
-    // );
+    this.http.get(`https://localhost:7116/api/Chats/GetUserChats?fromUserId=${this.user.id}§toUserId=${this.selectedUserId}`)
+      .subscribe((resp: any) => {
+        this.chats = resp
+    }
+    )
   }
 }
