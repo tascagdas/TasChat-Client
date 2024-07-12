@@ -4,15 +4,28 @@ import { Component } from '@angular/core';
 import { UserModel } from '../../Models/user.model';
 import { ChatModel } from '../../Models/chat.model';
 import * as signalR from '@microsoft/signalr';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,FormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
 export class HomeComponent {
+
+  sendMessage() {
+    const data = {
+      "fromUserId" : this.user.id,
+      "toUserId": this.selectedUserId,
+      "message" : this.message
+    }
+    this.http.post('https://localhost:7116/api/Chats/SendMessage', data)
+      .subscribe(resp => {
+      
+      });
+  }
 
   users :UserModel[] = [];
   chats :ChatModel[] = [];
@@ -20,6 +33,7 @@ export class HomeComponent {
   selectedUser: UserModel = new UserModel();
   user = new UserModel();
   hub: signalR.HubConnection | undefined;
+  message: string = "";
 
   constructor(
     private http: HttpClient
